@@ -17,7 +17,7 @@ app.get('/api/gerar-ping', async (req, res) => {
 
         const pingTexto = ping || "0ms";
         const uptimeTexto = uptime || "0s";
-        const ramTexto = "512MB/1TB"; 
+        const ramTexto = "57MB/1TB"; 
         const nodeVersao = process.version;
 
         const largura = 800;
