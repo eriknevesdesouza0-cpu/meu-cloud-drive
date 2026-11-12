@@ -150,7 +150,7 @@ app.get('/api/gerar-ping', async (req, res) => {
             console.error("Erro ao carregar o avatar central ou elementos:", e.message);
         }
 
-        // 5. Adicionar a Touca de Natal limpa de fundo na área direita
+        // 5. Adicionar a Touca de Natal limpa de fundo na área direita (estilo final aprovado)
         try {
             const touca = await Jimp.read(urlTouca);
             touca.resize(90, 90);
