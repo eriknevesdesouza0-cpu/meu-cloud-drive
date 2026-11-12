@@ -150,10 +150,22 @@ app.get('/api/gerar-ping', async (req, res) => {
             console.error("Erro ao carregar o avatar central ou elementos:", e.message);
         }
 
-        // 5. Adicionar a Touca de Natal EXATAMENTE na área destacada em verde (canto superior direito)
+        // 5. Adicionar a Touca de Natal limpa de fundo na área direita
         try {
             const touca = await Jimp.read(urlTouca);
-            touca.resize(90, 90); // Tamanho ideal proporcional ao espaço
+            touca.resize(90, 90);
+
+            // Remove o fundo branco/cinza quadriculado transformando em transparente
+            touca.scan(0, 0, touca.bitmap.width, touca.bitmap.height, function (x, y, idx) {
+                const red = this.bitmap.data[idx];
+                const green = this.bitmap.data[idx + 1];
+                const blue = this.bitmap.data[idx + 2];
+
+                if ((red > 200 && green > 200 && blue > 200) || (Math.abs(red - green) < 10 && Math.abs(green - blue) < 10 && red > 150)) {
+                    this.bitmap.data[idx + 3] = 0; // Alpha 0 = transparente
+                }
+            });
+
             const toucaX = 640;
             const toucaY = 45;
             imagem.composite(touca, toucaX, toucaY);
