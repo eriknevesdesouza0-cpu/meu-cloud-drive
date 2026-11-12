@@ -119,7 +119,7 @@ app.get('/api/gerar-ping', async (req, res) => {
             imagem.setPixelColor(0xf1c40fff, p.x, p.y - 1);
         });
 
-        // 4. Adicionar o Avatar Circular no Topo Central com Borda Dourada e a Touca
+        // 4. Adicionar o Avatar Circular no Topo Central com Borda Dourada
         try {
             const avatar = await Jimp.read(urlAvatar);
             avatar.resize(90, 90);
@@ -141,23 +141,24 @@ app.get('/api/gerar-ping', async (req, res) => {
             // Cola o avatar na imagem principal
             imagem.composite(avatar, avatarX, avatarY);
 
-            // Carregar e colar a touca natalina por cima do avatar
-            try {
-                const touca = await Jimp.read(urlTouca);
-                touca.resize(60, 60); // Tamanho proporcional para encaixar na cabeça
-                // Posiciona a touca perfeitamente no topo do avatar central
-                imagem.composite(touca, avatarX + 16, avatarY - 15);
-            } catch (errTouca) {
-                console.log("Aviso: Não foi possível carregar a touca:", errTouca.message);
-            }
-
-            // 5. Estrelas de natal nas laterais do avatar
+            // Estrelas de natal nas laterais do avatar
             const centroY = avatarY + 45;
             desenharEstrelaNatal(imagem, avatarX - 35, centroY);
             desenharEstrelaNatal(imagem, avatarX + 90 + 35, centroY);
 
         } catch (e) {
             console.error("Erro ao carregar o avatar central ou elementos:", e.message);
+        }
+
+        // 5. Adicionar a Touca de Natal EXATAMENTE na área destacada em verde (canto superior direito)
+        try {
+            const touca = await Jimp.read(urlTouca);
+            touca.resize(90, 90); // Tamanho ideal proporcional ao espaço
+            const toucaX = 640;
+            const toucaY = 45;
+            imagem.composite(touca, toucaX, toucaY);
+        } catch (errTouca) {
+            console.log("Aviso: Não foi possível carregar a touca:", errTouca.message);
         }
 
         // 6. Enviar a imagem final em buffer
